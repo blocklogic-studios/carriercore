@@ -1,0 +1,35 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:block": {
+    "description": {
+      "identifier": "carriercore:green_box",
+      "menu_category": {
+        "category": "construction",
+        "group": "carriercore:itemGroup.name.telecom",
+        "is_hidden_in_commands": false
+      },
+      "traits": {
+        "minecraft:placement_direction": {
+          "enabled_states": ["minecraft:cardinal_direction"]
+        }
+      }
+    },
+    "components": {
+      "minecraft:destructible_by_mining": { "seconds_to_destroy": 1.5 },
+      "minecraft:map_color": "#287838",
+      "minecraft:geometry": "geometry.carriercore.green_box",
+      "minecraft:material_instances": {
+        "*": { "texture": "carriercore_green_box", "render_method": "opaque" }
+      },
+      "minecraft:collision_box": { "origin": [-6, 0, -6], "size": [12, 12, 12] },
+      "minecraft:selection_box": { "origin": [-6, 0, -6], "size": [12, 12, 12] },
+      "carriercore:green_box": {}
+    },
+    "permutations": [
+      { "condition": "q.block_state('minecraft:cardinal_direction') == 'north'", "components": { "minecraft:transformation": { "rotation": [0, 0, 0] } } },
+      { "condition": "q.block_state('minecraft:cardinal_direction') == 'south'", "components": { "minecraft:transformation": { "rotation": [0, 180, 0] } } },
+      { "condition": "q.block_state('minecraft:cardinal_direction') == 'east'", "components": { "minecraft:transformation": { "rotation": [0, -90, 0] } } },
+      { "condition": "q.block_state('minecraft:cardinal_direction') == 'west'", "components": { "minecraft:transformation": { "rotation": [0, 90, 0] } } }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:block": {
+    "description": {
+      "identifier": "carriercore:server_rack",
+      "menu_category": {
+        "category": "construction",
+        "group": "carriercore:itemGroup.name.telecom",
+        "is_hidden_in_commands": false
+      }
+    },
+    "components": {
+      "minecraft:destructible_by_mining": { "seconds_to_destroy": 2.5 },
+      "minecraft:map_color": "#2A2A2A",
+      "minecraft:geometry": "geometry.carriercore.server_rack",
+      "minecraft:material_instances": {
+        "*": { "texture": "carriercore_server_rack", "render_method": "opaque" }
+      },
+      "minecraft:collision_box": { "origin": [-6, 0, -4], "size": [12, 16, 8] },
+      "minecraft:selection_box": { "origin": [-6, 0, -4], "size": [12, 16, 8] },
+      "carriercore:server_rack": {}
+    }
+  }
+}

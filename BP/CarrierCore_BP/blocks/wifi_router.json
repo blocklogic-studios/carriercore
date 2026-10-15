@@ -1,0 +1,35 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:block": {
+    "description": {
+      "identifier": "carriercore:wifi_router",
+      "menu_category": {
+        "category": "construction",
+        "group": "carriercore:itemGroup.name.telecom",
+        "is_hidden_in_commands": false
+      },
+      "traits": {
+        "minecraft:placement_direction": {
+          "enabled_states": ["minecraft:cardinal_direction"]
+        }
+      }
+    },
+    "components": {
+      "minecraft:destructible_by_mining": { "seconds_to_destroy": 1.0 },
+      "minecraft:map_color": "#1A1A2E",
+      "minecraft:geometry": "geometry.carriercore.wifi_router",
+      "minecraft:material_instances": {
+        "*": { "texture": "carriercore_wifi_router", "render_method": "opaque" }
+      },
+      "minecraft:collision_box": { "origin": [-4, 0, -4], "size": [8, 6, 8] },
+      "minecraft:selection_box": { "origin": [-4, 0, -4], "size": [8, 6, 8] },
+      "carriercore:wifi_router": {}
+    },
+    "permutations": [
+      { "condition": "q.block_state('minecraft:cardinal_direction') == 'north'", "components": { "minecraft:transformation": { "rotation": [0, 0, 0] } } },
+      { "condition": "q.block_state('minecraft:cardinal_direction') == 'south'", "components": { "minecraft:transformation": { "rotation": [0, 180, 0] } } },
+      { "condition": "q.block_state('minecraft:cardinal_direction') == 'east'", "components": { "minecraft:transformation": { "rotation": [0, -90, 0] } } },
+      { "condition": "q.block_state('minecraft:cardinal_direction') == 'west'", "components": { "minecraft:transformation": { "rotation": [0, 90, 0] } } }
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:geometry": [{
+    "description": {
+      "identifier": "geometry.carriercore.ixp_fabric",
+      "texture_width": 16, "texture_height": 16,
+      "visible_bounds_width": 1.4, "visible_bounds_height": 1.2, "visible_bounds_offset": [0, 0.4, 0]
+    },
+    "bones": [
+      {"name": "chassis", "pivot": [0,0,0], "cubes": [{"origin": [-8,0,-6], "size": [16,8,12], "uv": {"north": {"uv": [0,4], "uv_size": [16,8]}, "south": {"uv": [0,4], "uv_size": [16,8]}, "east": {"uv": [0,4], "uv_size": [12,8]}, "west": {"uv": [0,4], "uv_size": [12,8]}, "up": {"uv": [0,0], "uv_size": [16,12]}, "down": {"uv": [0,0], "uv_size": [16,12]}}}]},
+      {"name": "ports", "pivot": [0,0,0], "cubes": [{"origin": [-7,1.5,-6.3], "size": [14,5,0.5], "uv": {"north": {"uv": [1,4], "uv_size": [14,5]}}}]},
+      {"name": "status", "pivot": [0,0,0], "cubes": [{"origin": [-6,7.5,-5], "size": [12,1.5,2], "uv": {"north": {"uv": [2,1], "uv_size": [12,2]}, "up": {"uv": [2,1], "uv_size": [12,2]}}}]}
+    ]
+  }]
+}

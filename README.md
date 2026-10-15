@@ -23,26 +23,14 @@ Build towers, register carriers, issue SIMs, send texts, and deal with real fail
 
 ## Install
 
-### Option A — development packs (easiest while testing)
+1. Download **[CarrierCore-v2.2.0.mcaddon](https://github.com/blocklogic-studios/carriercore/releases/download/v2.2.0/CarrierCore-v2.2.0.mcaddon)** from [Releases](https://github.com/blocklogic-studios/carriercore/releases/tag/v2.2.0)
+2. Open it (Minecraft imports both packs)
+3. Enable the Behavior + Resource packs on your world
+4. Turn on **Beta APIs** under Experiments
 
-1. Clone this repo
-2. Copy `BP/CarrierCore_BP` into your world's `development_behavior_packs` folder
-3. Copy `RP/CarrierCore_RP` into `development_resource_packs`
-4. Enable both packs on the world
-5. Turn on **Beta APIs** under Experiments
+### From source (dev)
 
-### Option B — build an `.mcaddon`
-
-```bash
-# From the repo root
-cd BP && zip -r ../CarrierCore_BP.mcpack CarrierCore_BP && cd ..
-cd RP && zip -r ../CarrierCore_RP.mcpack CarrierCore_RP && cd ..
-zip CarrierCore.mcaddon CarrierCore_BP.mcpack CarrierCore_RP.mcpack
-```
-
-Open the `.mcaddon` on a device with Minecraft to import both packs, then enable them and turn on **Beta APIs**.
-
-> Packaged releases will show up under [Releases](../../releases) once we publish one.
+Copy `BP/CarrierCore_BP` and `RP/CarrierCore_RP` into your `development_behavior_packs` / `development_resource_packs` folders, enable both packs, turn on Beta APIs.
 
 ## Studio
 

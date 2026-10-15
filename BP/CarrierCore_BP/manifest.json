@@ -1,0 +1,58 @@
+{
+  "format_version": 2,
+  "header": {
+    "name": "CarrierCore Behavior Pack",
+    "description": "Telecom v2.2 – tall towers (100m fiber feed), power+cooling required, iPhone 17 / Galaxy / Pixel, more apps.",
+    "uuid": "eae04cf0-b71d-4ae3-86a1-8655144221bc",
+    "version": [
+      2,
+      2,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      26,
+      0
+    ]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "9f406796-d794-425c-b5aa-d69f4e939c7a",
+      "version": [
+        2,
+        2,
+        0
+      ]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "1ea10b81-2c5e-4288-adaa-876b660b99e1",
+      "version": [
+        2,
+        2,
+        0
+      ],
+      "entry": "scripts/main.js"
+    }
+  ],
+  "dependencies": [
+    {
+      "uuid": "80913c3e-8e11-45fa-aeea-9bb514b96416",
+      "version": [
+        2,
+        2,
+        0
+      ]
+    },
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.6.0"
+    },
+    {
+      "module_name": "@minecraft/server-ui",
+      "version": "2.0.0"
+    }
+  ]
+}

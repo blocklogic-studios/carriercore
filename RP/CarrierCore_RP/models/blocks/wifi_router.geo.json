@@ -1,0 +1,16 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:geometry": [{
+    "description": {
+      "identifier": "geometry.carriercore.wifi_router",
+      "texture_width": 16, "texture_height": 16,
+      "visible_bounds_width": 1.2, "visible_bounds_height": 1.0, "visible_bounds_offset": [0, 0.3, 0]
+    },
+    "bones": [
+      {"name": "body", "pivot": [0,0,0], "cubes": [{"origin": [-4,0,-3], "size": [8,3,6], "uv": {"north": {"uv": [4,6], "uv_size": [8,3]}, "south": {"uv": [4,6], "uv_size": [8,3]}, "east": {"uv": [4,6], "uv_size": [6,3]}, "west": {"uv": [4,6], "uv_size": [6,3]}, "up": {"uv": [4,4], "uv_size": [8,6]}, "down": {"uv": [4,4], "uv_size": [8,6]}}}]},
+      {"name": "antenna_l", "pivot": [0,0,0], "cubes": [{"origin": [-3.5,3,-0.5], "size": [1,5,1], "uv": {"north": {"uv": [7,0], "uv_size": [1,5]}}}]},
+      {"name": "antenna_r", "pivot": [0,0,0], "cubes": [{"origin": [2.5,3,-0.5], "size": [1,5,1], "uv": {"north": {"uv": [7,0], "uv_size": [1,5]}}}]},
+      {"name": "led", "pivot": [0,0,0], "cubes": [{"origin": [-2,2.5,2.5], "size": [4,0.5,0.5], "uv": {"north": {"uv": [6,8], "uv_size": [4,1]}}}]}
+    ]
+  }]
+}

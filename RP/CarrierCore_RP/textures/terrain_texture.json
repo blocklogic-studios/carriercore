@@ -1,0 +1,44 @@
+{
+  "resource_pack_name": "CarrierCore",
+  "texture_name": "atlas.terrain",
+  "padding": 8,
+  "num_mip_levels": 4,
+  "texture_data": {
+    "carriercore_tower_base": {
+      "textures": "textures/blocks/tower_base"
+    },
+    "carriercore_antenna": {
+      "textures": "textures/blocks/antenna"
+    },
+    "carriercore_server_rack": {
+      "textures": "textures/blocks/server_rack"
+    },
+    "carriercore_fiber_cable": {
+      "textures": "textures/blocks/fiber_cable"
+    },
+    "carriercore_power_unit": {
+      "textures": "textures/blocks/power_unit"
+    },
+    "carriercore_cooling_unit": {
+      "textures": "textures/blocks/cooling_unit"
+    },
+    "carriercore_ixp_fabric": {
+      "textures": "textures/blocks/ixp_fabric"
+    },
+    "carriercore_fiber_vertical": {
+      "textures": "textures/blocks/fiber_vertical"
+    },
+    "carriercore_wifi_router": {
+      "textures": "textures/blocks/wifi_router"
+    },
+    "carriercore_green_box": {
+      "textures": "textures/blocks/green_box"
+    },
+    "carriercore_satellite_dish": {
+      "textures": "textures/blocks/satellite_dish"
+    },
+    "carriercore_sat_receiver": {
+      "textures": "textures/blocks/sat_receiver"
+    }
+  }
+}

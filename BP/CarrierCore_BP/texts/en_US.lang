@@ -1,0 +1,30 @@
+pack.name=CarrierCore Behavior Pack
+pack.description=Multi-carrier mobile network – towers, messaging, SIMs, data centers
+
+tile.carriercore:tower_base.name=Cell Tower Base
+tile.carriercore:antenna.name=Sector Antenna
+tile.carriercore:server_rack.name=Server Rack
+tile.carriercore:fiber_cable.name=Fiber Optic Cable
+tile.carriercore:power_unit.name=Power Unit
+tile.carriercore:cooling_unit.name=Cooling Unit
+tile.carriercore:ixp_fabric.name=IXP Fabric
+
+item.carriercore:phone=Smartphone
+item.carriercore:phone.name=Smartphone
+item.carriercore:network_terminal=Network Management Terminal
+item.carriercore:network_terminal.name=Network Management Terminal
+item.carriercore:sim_card=SIM Card
+item.carriercore:sim_card.name=SIM Card
+
+carriercore:itemGroup.name.telecom=CarrierCore Telecom
+carriercore:itemGroup.name.telecom_gear=CarrierCore Devices
+tile.carriercore:wifi_router.name=WiFi Router
+tile.carriercore:green_box.name=Fiber Green Box
+tile.carriercore:satellite_dish.name=Satellite Dish
+tile.carriercore:sat_receiver.name=Satellite Receiver
+item.carriercore:iphone_17=iPhone 17
+item.carriercore:iphone_17.name=iPhone 17
+item.carriercore:galaxy_s25=Galaxy S25
+item.carriercore:galaxy_s25.name=Galaxy S25
+item.carriercore:pixel_10=Pixel 10
+item.carriercore:pixel_10.name=Pixel 10

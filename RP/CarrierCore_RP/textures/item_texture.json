@@ -1,0 +1,24 @@
+{
+  "resource_pack_name": "CarrierCore",
+  "texture_name": "atlas.items",
+  "texture_data": {
+    "carriercore_network_terminal": {
+      "textures": "textures/items/network_terminal"
+    },
+    "carriercore_phone": {
+      "textures": "textures/items/phone"
+    },
+    "carriercore_sim_card": {
+      "textures": "textures/items/sim_card"
+    },
+    "carriercore_iphone_17": {
+      "textures": "textures/items/iphone_17"
+    },
+    "carriercore_galaxy_s25": {
+      "textures": "textures/items/galaxy_s25"
+    },
+    "carriercore_pixel_10": {
+      "textures": "textures/items/pixel_10"
+    }
+  }
+}

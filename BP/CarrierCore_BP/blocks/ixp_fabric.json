@@ -1,0 +1,23 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:block": {
+    "description": {
+      "identifier": "carriercore:ixp_fabric",
+      "menu_category": {
+        "category": "construction",
+        "group": "carriercore:itemGroup.name.telecom",
+        "is_hidden_in_commands": false
+      }
+    },
+    "components": {
+      "minecraft:destructible_by_mining": { "seconds_to_destroy": 2.0 },
+      "minecraft:map_color": "#4A90D9",
+      "minecraft:geometry": "geometry.carriercore.ixp_fabric",
+      "minecraft:material_instances": {
+        "*": { "texture": "carriercore_ixp_fabric", "render_method": "opaque" }
+      },
+      "minecraft:collision_box": { "origin": [-8, 0, -8], "size": [16, 16, 16] },
+      "minecraft:selection_box": { "origin": [-8, 0, -8], "size": [16, 16, 16] }
+    }
+  }
+}

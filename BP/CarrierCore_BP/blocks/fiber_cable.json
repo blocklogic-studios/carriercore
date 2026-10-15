@@ -1,0 +1,54 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:block": {
+    "description": {
+      "identifier": "carriercore:fiber_cable",
+      "menu_category": {
+        "category": "construction",
+        "group": "carriercore:itemGroup.name.telecom",
+        "is_hidden_in_commands": false
+      },
+      "traits": {
+        "minecraft:placement_position": {
+          "enabled_states": ["minecraft:block_face"]
+        }
+      }
+    },
+    "components": {
+      "minecraft:destructible_by_mining": { "seconds_to_destroy": 0.5 },
+      "minecraft:map_color": "#E6C428",
+      "minecraft:material_instances": {
+        "*": { "texture": "carriercore_fiber_cable", "render_method": "opaque" }
+      },
+      "minecraft:geometry": "geometry.carriercore.fiber_horizontal",
+      "minecraft:collision_box": { "origin": [-8, 0, -1], "size": [16, 2, 2] },
+      "minecraft:selection_box": { "origin": [-8, 0, -1], "size": [16, 2, 2] }
+    },
+    "permutations": [
+      {
+        "condition": "q.block_state('minecraft:block_face') == 'up' || q.block_state('minecraft:block_face') == 'down'",
+        "components": {
+          "minecraft:geometry": "geometry.carriercore.fiber_vertical",
+          "minecraft:collision_box": { "origin": [-1, 0, -1], "size": [2, 16, 2] },
+          "minecraft:selection_box": { "origin": [-1, 0, -1], "size": [2, 16, 2] }
+        }
+      },
+      {
+        "condition": "q.block_state('minecraft:block_face') == 'north' || q.block_state('minecraft:block_face') == 'south'",
+        "components": {
+          "minecraft:geometry": "geometry.carriercore.fiber_ns",
+          "minecraft:collision_box": { "origin": [-1, 0, -8], "size": [2, 2, 16] },
+          "minecraft:selection_box": { "origin": [-1, 0, -8], "size": [2, 2, 16] }
+        }
+      },
+      {
+        "condition": "q.block_state('minecraft:block_face') == 'east' || q.block_state('minecraft:block_face') == 'west'",
+        "components": {
+          "minecraft:geometry": "geometry.carriercore.fiber_ew",
+          "minecraft:collision_box": { "origin": [-8, 0, -1], "size": [16, 2, 2] },
+          "minecraft:selection_box": { "origin": [-8, 0, -1], "size": [16, 2, 2] }
+        }
+      }
+    ]
+  }
+}

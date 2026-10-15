@@ -1,0 +1,13 @@
+{
+  "format_version": "1.21.0",
+  "minecraft:geometry": [{
+    "description": {
+      "identifier": "geometry.carriercore.fiber_ew",
+      "texture_width": 16, "texture_height": 16,
+      "visible_bounds_width": 1.2, "visible_bounds_height": 0.4, "visible_bounds_offset": [0, 0.05, 0]
+    },
+    "bones": [
+      {"name": "cable", "pivot": [0,1,0], "cubes": [{"origin": [-8,0.5,-1], "size": [16,1.5,2], "uv": {"north": {"uv": [0,6], "uv_size": [16,2]}, "south": {"uv": [0,6], "uv_size": [16,2]}, "up": {"uv": [0,6], "uv_size": [16,2]}, "down": {"uv": [0,6], "uv_size": [16,2]}, "east": {"uv": [0,6], "uv_size": [2,2]}, "west": {"uv": [0,6], "uv_size": [2,2]}}}]}
+    ]
+  }]
+}

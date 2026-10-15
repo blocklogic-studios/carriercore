@@ -1,0 +1,38 @@
+{
+  "format_version": "1.26.0",
+  "minecraft:block": {
+    "description": {
+      "identifier": "carriercore:tower_base",
+      "menu_category": {
+        "category": "construction",
+        "group": "carriercore:itemGroup.name.telecom",
+        "is_hidden_in_commands": false
+      }
+    },
+    "components": {
+      "minecraft:destructible_by_mining": {
+        "seconds_to_destroy": 3.0
+      },
+      "minecraft:destructible_by_explosion": {
+        "explosion_resistance": 6.0
+      },
+      "minecraft:map_color": "#4A4A4A",
+      "minecraft:geometry": "geometry.carriercore.tower_base",
+      "minecraft:material_instances": {
+        "*": {
+          "texture": "carriercore_tower_base",
+          "render_method": "opaque"
+        }
+      },
+      "minecraft:collision_box": {
+        "origin": [-8, 0, -8],
+        "size": [16, 24, 16]
+      },
+      "minecraft:selection_box": {
+        "origin": [-8, 0, -8],
+        "size": [16, 24, 16]
+      },
+      "carriercore:tower_base": {}
+    }
+  }
+}

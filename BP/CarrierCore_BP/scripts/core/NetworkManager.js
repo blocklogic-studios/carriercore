@@ -76,6 +76,8 @@ export class NetworkManager {
   }
 
   tick() {
+    try { this.processFinanceBridge(); } catch (e) {}
+
     this.processMessageQueue();
     this.updateLoads();
     this.refreshOutages();
@@ -1078,6 +1080,198 @@ export class NetworkManager {
     if (list.length > 40) list.shift();
     this.save();
     return true;
+  }
+
+
+  // ---------- FinanceCore bridge (phone browser payments) ----------
+  isFinanceCorePresent() {
+    try {
+      const raw = world.getDynamicProperty("financecore:state");
+      return !!(raw && typeof raw === "string");
+    } catch (e) {
+      return false;
+    }
+  }
+
+  _loadFinanceState() {
+    try {
+      const raw = world.getDynamicProperty("financecore:state");
+      if (!raw || typeof raw !== "string") return null;
+      return JSON.parse(raw);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  _saveFinanceState(data) {
+    try {
+      world.setDynamicProperty("financecore:state", JSON.stringify(data));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  _luhnValid(pan) {
+    const digits = String(pan || "").replace(/\D/g, "");
+    if (digits.length < 13 || digits.length > 19) return false;
+    let sum = 0;
+    let alt = false;
+    for (let i = digits.length - 1; i >= 0; i--) {
+      let n = parseInt(digits[i], 10);
+      if (alt) {
+        n *= 2;
+        if (n > 9) n -= 9;
+      }
+      sum += n;
+      alt = !alt;
+    }
+    return sum % 10 === 0;
+  }
+
+  /**
+   * Charge a FinanceCore embossed card by PAN (Luhn + CVV + expiry).
+   * Mutates financecore:state in the world.
+   */
+  chargeFinanceCard(pan, expiry, cvv, amount, merchant) {
+    amount = Math.round(Number(amount) * 100) / 100;
+    if (!Number.isFinite(amount) || amount <= 0) return { ok: false, reason: "Invalid amount" };
+    if (!this._luhnValid(pan)) return { ok: false, reason: "Invalid card number" };
+    const data = this._loadFinanceState();
+    if (!data) return { ok: false, reason: "FinanceCore not loaded — enable FinanceCore BP in this world" };
+
+    const cards = data.cards ? (Array.isArray(data.cards) ? data.cards : Object.entries(data.cards || {})) : [];
+    const digits = String(pan).replace(/\D/g, "");
+    let card = null;
+    let cardKey = null;
+    for (const entry of cards) {
+      const c = Array.isArray(entry) ? entry[1] : entry;
+      const k = Array.isArray(entry) ? entry[0] : (c && c.id);
+      if (!c) continue;
+      if (c.pan && String(c.pan).replace(/\D/g, "") === digits) {
+        card = c;
+        cardKey = k;
+        break;
+      }
+    }
+    if (!card) return { ok: false, reason: "Card not on file in FinanceCore" };
+    if (card.status && card.status !== "active") return { ok: false, reason: "Card " + card.status };
+    if (cvv != null && String(cvv).trim() !== "" && String(card.cvv) !== String(cvv).trim()) {
+      return { ok: false, reason: "CVV incorrect" };
+    }
+    if (expiry) {
+      const a = String(expiry).replace(/\D/g, "");
+      const b = String(card.expiry || "").replace(/\D/g, "");
+      if (a && b && a !== b) return { ok: false, reason: "Expiry mismatch" };
+    }
+
+    const accounts = data.accounts
+      ? Array.isArray(data.accounts)
+        ? data.accounts
+        : Object.entries(data.accounts || {})
+      : [];
+    let acc = null;
+    let accKey = null;
+    for (const entry of accounts) {
+      const a = Array.isArray(entry) ? entry[1] : entry;
+      const k = Array.isArray(entry) ? entry[0] : (a && a.id);
+      if (a && a.id === card.accountId) {
+        acc = a;
+        accKey = k;
+        break;
+      }
+    }
+    if (!acc) return { ok: false, reason: "Linked account missing" };
+
+    if (acc.type === "credit") {
+      if (acc.overdue) return { ok: false, reason: "Card overdue" };
+      const limit = acc.limit || 0;
+      if ((acc.balance || 0) + amount > limit) return { ok: false, reason: "Over credit limit" };
+      acc.balance = Math.round(((acc.balance || 0) + amount) * 100) / 100;
+    } else {
+      if ((acc.balance || 0) < amount) return { ok: false, reason: "Insufficient funds" };
+      acc.balance = Math.round(((acc.balance || 0) - amount) * 100) / 100;
+    }
+    if (!acc.ledger) acc.ledger = [];
+    acc.ledger.push({
+      type: "phone_browser",
+      amount,
+      merchant: String(merchant || "Phone browser").slice(0, 40),
+      panLast4: card.last4,
+      at: Date.now()
+    });
+    if (acc.ledger.length > 40) acc.ledger = acc.ledger.slice(-40);
+
+    // write back maps
+    if (Array.isArray(data.accounts)) {
+      data.accounts = accounts.map((e) => (Array.isArray(e) ? e : [e.id, e]));
+    } else if (accKey != null) {
+      data.accounts = Object.fromEntries(accounts.map((e) => (Array.isArray(e) ? e : [e.id, e])));
+    }
+    // Prefer array-of-entries form used by FinanceCore
+    data.accounts = accounts.map((e) => {
+      if (Array.isArray(e)) return e[1].id === acc.id ? [e[0], acc] : e;
+      return e.id === acc.id ? [e.id, acc] : [e.id, e];
+    });
+    data.cards = cards.map((e) => (Array.isArray(e) ? e : [e.id, e]));
+
+    if (!this._saveFinanceState(data)) return { ok: false, reason: "Could not save FinanceCore state" };
+    return {
+      ok: true,
+      last4: card.last4,
+      balance: acc.balance,
+      amount
+    };
+  }
+
+  /** Carrier store plans purchasable from phone browser */
+  getBrowserPlans() {
+    return [
+      { id: "basic", name: "Basic", price: 25, texts: 200, dataMB: 2048 },
+      { id: "plus", name: "Plus", price: 45, texts: 500, dataMB: 10240 },
+      { id: "unlimited", name: "Unlimited", price: 75, texts: 9999, dataMB: 51200 },
+      { id: "data_heavy", name: "Data Heavy", price: 65, texts: 100, dataMB: 40960 }
+    ];
+  }
+
+  applyPaidPlanToSim(simId, plan) {
+    const sim = this.sims.get(simId);
+    if (!sim) return { ok: false, reason: "SIM not found" };
+    sim.planId = plan.id;
+    sim.planName = plan.name;
+    sim.textsLeft = (sim.textsLeft || 0) + (plan.texts || 0);
+    sim.dataLeftMB = (sim.dataLeftMB || 0) + (plan.dataMB || 0);
+    this.save();
+    return { ok: true, sim };
+  }
+
+  processFinanceBridge() {
+    try {
+      const raw = world.getDynamicProperty("carriercore:finance_bridge");
+      if (!raw || typeof raw !== "string") return;
+      const bridge = JSON.parse(raw);
+      if (!bridge.plans) return;
+      for (const [phone, record] of Object.entries(bridge.plans)) {
+        if (!record || record._applied) continue;
+        // find SIM by number
+        for (const [, sim] of this.sims) {
+          const num = String(sim.number || "").replace(/\D/g, "");
+          const dest = String(phone).replace(/\D/g, "");
+          if (num && dest && (num === dest || num.endsWith(dest) || dest.endsWith(num))) {
+            this.applyPaidPlanToSim(sim.id, {
+              id: record.planId || "plus",
+              name: record.planName || "Purchased",
+              texts: record.talkMin || 200,
+              dataMB: (record.dataGb || 5) * 1024
+            });
+            record._applied = true;
+          }
+        }
+      }
+      world.setDynamicProperty("carriercore:finance_bridge", JSON.stringify(bridge));
+    } catch (e) {
+      console.warn("[CarrierCore] finance bridge", e);
+    }
   }
 
   topUpSim(simId, texts = 50, dataMB = 100) {

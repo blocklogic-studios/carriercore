@@ -841,6 +841,7 @@ function openApps(player, network, active) {
         else player.sendMessage(`§c${retry.reason}`);
       } else player.sendMessage(`§c${result.reason}`);
     };
+    if (s === 0) return nextForm(() => openPhoneBrowser(player, network, active));
     if (s === 1) return openSite(x => x.type === "weather", "§7No weather site. Host one in Terminal.");
     if (s === 2) return openSite(x => x.type === "news", "§7No news site. Host one in Terminal.");
     if (!sites.length) return player.sendMessage("§7No sites hosted.");
@@ -864,6 +865,139 @@ function openApps(player, network, active) {
     });
   });
 }
+
+/** Phone browser: pay for plans & shop with FinanceCore card (Luhn PAN) */
+function openPhoneBrowser(player, network, active) {
+  const fc = network.isFinanceCorePresent();
+  const form = new ActionFormData()
+    .title("Browser")
+    .body(
+      fc
+        ? "§aFinanceCore linked§7 — pay with embossed card number"
+        : "§eEnable FinanceCore§7 to pay with real card numbers"
+    )
+    .button("Carrier Store — buy plan")
+    .button("Checkout — pay merchant")
+    .button("Hosted sites")
+    .button("Back");
+  form.show(player).then((res) => {
+    if (res.canceled || res.selection === 3) return nextForm(() => openApps(player, network, active));
+    if (res.selection === 0) return nextForm(() => openCarrierStore(player, network, active));
+    if (res.selection === 1) return nextForm(() => openBrowserCheckout(player, network, active));
+    if (res.selection === 2) {
+      const sites = Array.from(network.services.values());
+      if (!sites.length) return player.sendMessage("§7No sites hosted. Use Terminal to host.");
+      nextForm(() => {
+        const sf = new ActionFormData().title("Sites");
+        for (const site of sites) {
+          const carr = network.getCarrier(site.hostCarrierId);
+          sf.button(`${site.name} (${carr ? carr.name : "?"})`);
+        }
+        sf.show(player).then((sr) => {
+          if (sr.canceled) return;
+          const result = network.browseService(player, active.id, sites[sr.selection].id);
+          if (result.ok) player.sendMessage(result.page);
+          else player.sendMessage(`§c${result.reason}`);
+        });
+      });
+    }
+  });
+}
+
+function openCarrierStore(player, network, active) {
+  if (!network.isFinanceCorePresent()) {
+    player.sendMessage("§cFinanceCore required. Enable FinanceCore Behavior + Resources.");
+    return nextForm(() => openPhoneBrowser(player, network, active));
+  }
+  const plans = network.getBrowserPlans();
+  const form = new ActionFormData()
+    .title("Carrier Store")
+    .body(`§7Paying for SIM §f${active.number}
+§7Enter embossed card PAN + CVV`);
+  for (const p of plans) {
+    form.button(`${p.name}
+§a$${p.price.toFixed(2)} §8${p.texts} texts · ${p.dataMB} MB`);
+  }
+  form.button("Back");
+  form.show(player).then((res) => {
+    if (res.canceled || res.selection === plans.length) {
+      return nextForm(() => openPhoneBrowser(player, network, active));
+    }
+    const plan = plans[res.selection];
+    nextForm(() => {
+      const modal = new ModalFormData()
+        .title(`Buy ${plan.name}`)
+        .textField("Card number", "4510...")
+        .textField("Expiry MM/YY", "12/29")
+        .textField("CVV", "123");
+      modal.show(player).then((r) => {
+        if (r.canceled) return;
+        const pay = network.chargeFinanceCard(
+          r.formValues[0],
+          r.formValues[1],
+          r.formValues[2],
+          plan.price,
+          `Carrier plan ${plan.name}`
+        );
+        if (!pay.ok) {
+          player.sendMessage(`§c${pay.reason}`);
+          return;
+        }
+        const applied = network.applyPaidPlanToSim(active.id, plan);
+        if (!applied.ok) {
+          player.sendMessage(`§cPaid but plan apply failed: ${applied.reason}`);
+          return;
+        }
+        player.sendMessage(
+          `§a${plan.name} active on §f${active.number}
+§7Charged ••${pay.last4} · $${plan.price.toFixed(2)}`
+        );
+      });
+    });
+  });
+}
+
+function openBrowserCheckout(player, network, active) {
+  if (!network.isFinanceCorePresent()) {
+    player.sendMessage("§cFinanceCore required for card checkout.");
+    return nextForm(() => openPhoneBrowser(player, network, active));
+  }
+  const modal = new ModalFormData()
+    .title("Web checkout")
+    .textField("Card number", "4510...")
+    .textField("Expiry MM/YY", "12/29")
+    .textField("CVV", "123")
+    .textField("Amount", "19.99")
+    .textField("Merchant", "Online store");
+  modal.show(player).then((r) => {
+    if (r.canceled) return;
+    const amount = parseFloat(String(r.formValues[3]).replace(/[^0-9.]/g, ""));
+    if (!Number.isFinite(amount) || amount <= 0) {
+      player.sendMessage("§cInvalid amount");
+      return;
+    }
+    const pay = network.chargeFinanceCard(
+      r.formValues[0],
+      r.formValues[1],
+      r.formValues[2],
+      amount,
+      r.formValues[4] || "Online store"
+    );
+    if (!pay.ok) {
+      player.sendMessage(`§c${pay.reason}`);
+      return;
+    }
+    // small data use for browsing
+    try {
+      if (active.dataLeftMB > 0) active.dataLeftMB = Math.max(0, active.dataLeftMB - 1);
+      network.save();
+    } catch (e) {}
+    player.sendMessage(
+      `§aPaid $${amount.toFixed(2)} to §f${r.formValues[4] || "store"}§a with ••${pay.last4}`
+    );
+  });
+}
+
 
 function openHotspotMenu(player, network) {
   const form = new ActionFormData().title("Mobile Hotspot")

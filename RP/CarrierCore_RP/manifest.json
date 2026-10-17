@@ -2,11 +2,11 @@
   "format_version": 2,
   "header": {
     "name": "CarrierCore Resource Pack",
-    "description": "3D models, phones, textures for CarrierCore.",
+    "description": "Telecom + phone browser card pay (FinanceCore Luhn). Towers, SIMs, plans.",
     "uuid": "80913c3e-8e11-45fa-aeea-9bb514b96416",
     "version": [
       2,
-      2,
+      3,
       0
     ],
     "min_engine_version": [
@@ -21,7 +21,7 @@
       "uuid": "22857995-347a-449f-835d-649aba1482fa",
       "version": [
         2,
-        2,
+        3,
         0
       ]
     }

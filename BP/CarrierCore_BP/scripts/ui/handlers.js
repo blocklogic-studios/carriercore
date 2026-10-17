@@ -873,18 +873,16 @@ function openPhoneBrowser(player, network, active) {
     .title("Browser")
     .body(
       fc
-        ? "§aFinanceCore linked§7 — pay with embossed card number"
-        : "§eEnable FinanceCore§7 to pay with real card numbers"
+        ? "§aFinanceCore linked§7 — buy a mobile plan with your embossed card"
+        : "§eEnable FinanceCore§7 to pay for plans with a card number"
     )
     .button("Carrier Store — buy plan")
-    .button("Checkout — pay merchant")
     .button("Hosted sites")
     .button("Back");
   form.show(player).then((res) => {
-    if (res.canceled || res.selection === 3) return nextForm(() => openApps(player, network, active));
+    if (res.canceled || res.selection === 2) return nextForm(() => openApps(player, network, active));
     if (res.selection === 0) return nextForm(() => openCarrierStore(player, network, active));
-    if (res.selection === 1) return nextForm(() => openBrowserCheckout(player, network, active));
-    if (res.selection === 2) {
+    if (res.selection === 1) {
       const sites = Array.from(network.services.values());
       if (!sites.length) return player.sendMessage("§7No sites hosted. Use Terminal to host.");
       nextForm(() => {
@@ -944,6 +942,7 @@ function openCarrierStore(player, network, active) {
           return;
         }
         const applied = network.applyPaidPlanToSim(active.id, plan);
+        try { network.recordPlanPurchaseBridge(active, plan, pay.last4); } catch (e) {}
         if (!applied.ok) {
           player.sendMessage(`§cPaid but plan apply failed: ${applied.reason}`);
           return;
@@ -954,47 +953,6 @@ function openCarrierStore(player, network, active) {
         );
       });
     });
-  });
-}
-
-function openBrowserCheckout(player, network, active) {
-  if (!network.isFinanceCorePresent()) {
-    player.sendMessage("§cFinanceCore required for card checkout.");
-    return nextForm(() => openPhoneBrowser(player, network, active));
-  }
-  const modal = new ModalFormData()
-    .title("Web checkout")
-    .textField("Card number", "4510...")
-    .textField("Expiry MM/YY", "12/29")
-    .textField("CVV", "123")
-    .textField("Amount", "19.99")
-    .textField("Merchant", "Online store");
-  modal.show(player).then((r) => {
-    if (r.canceled) return;
-    const amount = parseFloat(String(r.formValues[3]).replace(/[^0-9.]/g, ""));
-    if (!Number.isFinite(amount) || amount <= 0) {
-      player.sendMessage("§cInvalid amount");
-      return;
-    }
-    const pay = network.chargeFinanceCard(
-      r.formValues[0],
-      r.formValues[1],
-      r.formValues[2],
-      amount,
-      r.formValues[4] || "Online store"
-    );
-    if (!pay.ok) {
-      player.sendMessage(`§c${pay.reason}`);
-      return;
-    }
-    // small data use for browsing
-    try {
-      if (active.dataLeftMB > 0) active.dataLeftMB = Math.max(0, active.dataLeftMB - 1);
-      network.save();
-    } catch (e) {}
-    player.sendMessage(
-      `§aPaid $${amount.toFixed(2)} to §f${r.formValues[4] || "store"}§a with ••${pay.last4}`
-    );
   });
 }
 

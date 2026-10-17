@@ -1245,6 +1245,37 @@ export class NetworkManager {
     return { ok: true, sim };
   }
 
+
+  recordPlanPurchaseBridge(sim, plan, last4) {
+    try {
+      let bridge = {};
+      const raw = world.getDynamicProperty("carriercore:finance_bridge");
+      if (raw && typeof raw === "string") bridge = JSON.parse(raw);
+      if (!bridge.plans) bridge.plans = {};
+      if (!bridge.events) bridge.events = [];
+      const phone = String(sim.number || "").replace(/\D/g, "");
+      const record = {
+        planId: plan.id,
+        planName: plan.name,
+        price: plan.price,
+        texts: plan.texts,
+        dataMB: plan.dataMB,
+        phone,
+        simId: sim.id,
+        paidWithLast4: last4,
+        purchasedAt: Date.now(),
+        _applied: true
+      };
+      bridge.plans[phone] = record;
+      bridge.events.push({ type: "plan_purchase", phone, planId: plan.id, at: Date.now() });
+      if (bridge.events.length > 40) bridge.events = bridge.events.slice(-40);
+      world.setDynamicProperty("carriercore:finance_bridge", JSON.stringify(bridge));
+      world.setDynamicProperty("financecore:carrier_bridge", JSON.stringify(bridge));
+    } catch (e) {
+      console.warn("[CarrierCore] recordPlanPurchaseBridge", e);
+    }
+  }
+
   processFinanceBridge() {
     try {
       const raw = world.getDynamicProperty("carriercore:finance_bridge");

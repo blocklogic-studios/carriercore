@@ -1,19 +1,18 @@
 # CarrierCore
 
-Minecraft Bedrock multi-carrier cellular network sim.
+Minecraft Bedrock multi-carrier cellular network.
 
-## v2.3.0
+## v2.3.1
 
-- **Phone Browser** → Carrier Store & web checkout
-- Pay with **FinanceCore embossed card** (Luhn PAN + CVV + expiry)
-- Plans apply to the active SIM after payment
-- Reads/writes FinanceCore world state when both packs are loaded
+- Phone **Browser → Carrier Store** — pay for a **mobile plan** with a FinanceCore embossed card (Luhn PAN + CVV)
+- General merchant online checkout removed
+- Writes `carriercore:finance_bridge` / `financecore:carrier_bridge` on plan purchase
 
 ## Install
 
-1. [CarrierCore-v2.3.0.mcaddon](https://github.com/blocklogic-studios/carriercore/releases/download/v2.3.0/CarrierCore-v2.3.0.mcaddon)
-2. Optional: [FinanceCore](https://github.com/blocklogic-studios/financecore/releases) for card payments
-3. Enable both packs + **Beta APIs**
+1. [CarrierCore-v2.3.1.mcaddon](https://github.com/blocklogic-studios/carriercore/releases/download/v2.3.1/CarrierCore-v2.3.1.mcaddon)
+2. [FinanceCore](https://github.com/blocklogic-studios/financecore/releases) for card charges
+3. Both packs + **Beta APIs**
 
 ## Studio
 
